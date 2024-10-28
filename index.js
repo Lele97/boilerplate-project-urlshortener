@@ -26,10 +26,10 @@ app.get('/api/hello', function(req, res) {
   res.json({ greeting: 'hello API' });
 });
 
-app.post("/api/shorturl", (req,res)=>{
-    const url = req.body.url
+app.post("/api/shorturl", (req, res) => {
+  const url = req.body.url;
 
-   // Check if URL follows the correct format
+  // Check if URL follows the correct format
   const regex = /^(http|https):\/\/[^ "]+$/;
   if (!regex.test(url)) {
     return res.json({ error: 'invalid url' });
@@ -46,14 +46,19 @@ app.post("/api/shorturl", (req,res)=>{
   // Use dns.lookup to verify the URL
   dns.lookup(hostname, (err) => {
     if (err) {
-      res.json({ error: 'invalid url' });
-    } else {
-      index = index +1;
-      let shortUrl = index;
-      console.log(shortUrl)
-      inMemoryDb[index]=url
-      res.json({ original_url: url, short_url: shortUrl });
+      return res.json({ error: 'invalid url' });
     }
+
+    // Increment index before using it
+    index += 1;
+    let shortUrl = index;
+    console.log(shortUrl);
+    
+    // Store the URL in the database
+    inMemoryDb[shortUrl] = url;
+    
+    // Send response
+    res.json({ original_url: url, short_url: shortUrl });
   });
 });
 
@@ -74,10 +79,6 @@ app.get("/api/shorturl/:short_url$", (req, res) => {
   } else {
     res.json({ error: "Key inesistente" });
   }
-});
-
-app.get('/inMemoryGet', (req, res) => {
-  res.send(`<pre>${JSON.stringify(inMemoryDb, null, 2)}</pre>`);
 });
 
 app.listen(port, function() {
