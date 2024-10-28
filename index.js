@@ -29,9 +29,19 @@ app.get('/api/hello', function(req, res) {
 app.post("/api/shorturl", (req,res)=>{
     const url = req.body.url
 
+   // Check if URL follows the correct format
+  const regex = /^(http|https):\/\/[^ "]+$/;
+  if (!regex.test(url)) {
+    return res.json({ error: 'invalid url' });
+  }
+
   // Extract the hostname from the URL
-  const hostname = new URL(url).hostname
-   console.log("Hostname : "+hostname)/*  */
+  let hostname;
+  try {
+    hostname = new URL(url).hostname;
+  } catch (err) {
+    return res.json({ error: 'invalid url' });
+  }
 
   // Use dns.lookup to verify the URL
   dns.lookup(hostname, (err) => {
