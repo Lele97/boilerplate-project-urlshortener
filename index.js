@@ -3,7 +3,8 @@ const express = require('express');
 const bodyParser = require('body-parser')
 const cors = require('cors');
 const app = express();
-const dns = require('dns')
+const dns = require('dns');
+const { redirect } = require('express/lib/response');
 
 // Basic Configuration
 const port = process.env.PORT;
@@ -75,7 +76,7 @@ app.get("/api/shorturl/:short_url$", (req, res) => {
   if (inMemoryDb.hasOwnProperty(shortUrl)) {
     original_url = inMemoryDb[shortUrl];
     console.log("Original Url : " + original_url);
-    res.json({ original_url: original_url });
+    res.redirect(original_url)
   } else {
     res.json({ error: "Key inesistente" });
   }
