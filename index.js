@@ -36,7 +36,7 @@ app.post("/api/shorturl", (req,res)=>{
   // Use dns.lookup to verify the URL
   dns.lookup(hostname, (err) => {
     if (err) {
-      res.json({ error: 'Invalid URL' });
+      res.json({ error: 'invalid url' });
     } else {
       index = index +1;
       let shortUrl = index;
